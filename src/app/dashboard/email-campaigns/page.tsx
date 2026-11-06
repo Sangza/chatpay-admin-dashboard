@@ -28,6 +28,8 @@ export default function EmailCampaignsPage() {
   const [segment, setSegment] = useState<Segment>("kyc_pending");
   const [subject, setSubject] = useState("");
   const [html, setHtml] = useState("");
+  const [fromEmail, setFromEmail] = useState("");
+  const [fromName, setFromName] = useState("");
   const [step, setStep] = useState<"compose" | "review" | "result">("compose");
   const [sending, setSending] = useState(false);
   const [result, setResult] = useState<SendResult | null>(null);
@@ -57,7 +59,13 @@ export default function EmailCampaignsPage() {
       const res = await fetch("/api/admin/email-send", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ segment, subject, html }),
+        body: JSON.stringify({
+          segment,
+          subject,
+          html,
+          fromEmail: fromEmail || undefined,
+          fromName: fromName || undefined,
+        }),
       });
       const body = await res.json();
       if (!res.ok) throw new Error(body.error || "Failed to send campaign.");
@@ -134,6 +142,31 @@ export default function EmailCampaignsPage() {
             />
           </div>
 
+          <div>
+            <label className="mb-1 block text-sm text-neutral-300">
+              Send from (optional — leave blank to use the default sender)
+            </label>
+            <div className="flex gap-2">
+              <input
+                type="email"
+                placeholder="e.g. chatpayhq@gmail.com"
+                value={fromEmail}
+                onChange={(e) => setFromEmail(e.target.value)}
+                className="w-full rounded-md border border-neutral-700 bg-neutral-900 px-3 py-2 text-sm outline-none focus:border-lime-400"
+              />
+              <input
+                type="text"
+                placeholder="Display name (optional)"
+                value={fromName}
+                onChange={(e) => setFromName(e.target.value)}
+                className="w-full rounded-md border border-neutral-700 bg-neutral-900 px-3 py-2 text-sm outline-none focus:border-lime-400"
+              />
+            </div>
+            <p className="mt-1 text-xs text-neutral-500">
+              Only applies to this send — every other campaign keeps using the default sender.
+            </p>
+          </div>
+
           <button
             disabled={!subject || !html}
             onClick={() => setStep("review")}
@@ -153,6 +186,10 @@ export default function EmailCampaignsPage() {
           </div>
 
           <div className="rounded-lg border border-neutral-800 p-4">
+            <p className="text-sm text-neutral-500">From</p>
+            <p className="mb-3 font-medium">
+              {fromEmail ? `${fromName || "ChatPay"} <${fromEmail}>` : "Default sender"}
+            </p>
             <p className="text-sm text-neutral-500">Subject</p>
             <p className="mb-3 font-medium">{subject}</p>
             <p className="text-sm text-neutral-500">Body preview</p>

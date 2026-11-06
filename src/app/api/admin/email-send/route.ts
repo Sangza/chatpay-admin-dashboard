@@ -8,7 +8,7 @@ interface SendResult {
 }
 
 export async function POST(req: NextRequest) {
-  const { segment, subject, html } = await req.json();
+  const { segment, subject, html, fromEmail, fromName } = await req.json();
 
   if (!segment || !subject || !html) {
     return NextResponse.json({ error: "segment, subject, and html are required." }, { status: 400 });
@@ -17,7 +17,7 @@ export async function POST(req: NextRequest) {
   try {
     const result = await backendFetch<SendResult>("/admin/email/send", {
       method: "POST",
-      body: JSON.stringify({ segment, subject, html }),
+      body: JSON.stringify({ segment, subject, html, fromEmail, fromName }),
     });
     return NextResponse.json(result);
   } catch (err) {

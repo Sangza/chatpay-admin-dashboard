@@ -35,6 +35,11 @@ export async function POST(req: NextRequest) {
   } catch (err) {
     const status = err instanceof BackendApiError ? err.status : 500;
     const message = err instanceof Error ? err.message : "Login failed.";
+    // Logged server-side since a plain fetch failure (e.g. API_BASE_URL
+    // pointing nowhere reachable) gives the browser a vague message like
+    // "fetch failed" with no way to tell what actually went wrong - this is
+    // the only place that records the real cause.
+    console.error(`Admin login failed: ${message}`, err);
     return NextResponse.json({ error: message }, { status });
   }
 }

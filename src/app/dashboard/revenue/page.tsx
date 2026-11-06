@@ -40,7 +40,7 @@ export default async function RevenuePage() {
         </div>
       )}
 
-      <div className="mb-6 grid grid-cols-2 gap-4">
+      <div className="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-2">
         <div className="rounded-lg border border-neutral-800 p-5">
           <p className="text-sm text-neutral-400">USDC volume processed</p>
           <p className="mt-1 text-2xl font-semibold">{usdc?.totalAmountProcessed?.toLocaleString() ?? "—"}</p>

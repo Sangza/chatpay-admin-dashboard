@@ -146,7 +146,7 @@ export default function EmailCampaignsPage() {
             <label className="mb-1 block text-sm text-neutral-300">
               Send from (optional — leave blank to use the default sender)
             </label>
-            <div className="flex gap-2">
+            <div className="flex flex-col gap-2 sm:flex-row">
               <input
                 type="email"
                 placeholder="e.g. chatpayhq@gmail.com"

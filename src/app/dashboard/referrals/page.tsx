@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { backendFetch, BackendApiError } from "@/lib/backend";
 import Pagination from "@/components/pagination";
 import ApiErrorNotice from "@/components/api-error-notice";
@@ -74,6 +75,7 @@ export default async function ReferralsPage({
               <th className="px-4 py-3">Merchants referred</th>
               <th className="px-4 py-3">Referred transactions</th>
               <th className="px-4 py-3">Pending payout</th>
+              <th className="px-4 py-3"></th>
             </tr>
           </thead>
           <tbody>
@@ -83,6 +85,14 @@ export default async function ReferralsPage({
                 <td className="px-4 py-3">{r.referredCount}</td>
                 <td className="px-4 py-3 text-neutral-400">{r.transactionCount}</td>
                 <td className="px-4 py-3">₦{r.totalPendingPayoutNgn.toLocaleString()}</td>
+                <td className="px-4 py-3">
+                  <Link
+                    href={`/dashboard/referrals/${r.referrerMerchantId}`}
+                    className="text-lime-400 hover:underline"
+                  >
+                    View downstream →
+                  </Link>
+                </td>
               </tr>
             ))}
           </tbody>

@@ -7,8 +7,10 @@ import LogoutButton from "./logout-button";
 const NAV_ITEMS = [
   { href: "/dashboard/merchants", label: "Merchants & KYC" },
   { href: "/dashboard/transactions", label: "Transactions" },
+  { href: "/dashboard/buy-transactions", label: "Buy Transactions" },
   { href: "/dashboard/access-grants", label: "Access Grants" },
   { href: "/dashboard/email-campaigns", label: "Email Campaigns" },
+  { href: "/dashboard/telegram-broadcast", label: "Telegram Broadcast" },
   { href: "/dashboard/groups", label: "Groups" },
   { href: "/dashboard/referrals", label: "Referrals" },
   { href: "/dashboard/revenue", label: "Revenue" },

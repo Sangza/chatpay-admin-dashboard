@@ -15,6 +15,7 @@ interface TransactionRow {
   paymentType: string;
   createdAt: string;
   merchantId?: { businessName?: string; email?: string } | string;
+  actingDelegateChatId?: string | null;
 }
 
 interface TransactionsResponse {
@@ -69,6 +70,7 @@ export default async function TransactionsPage({
             <tr>
               <th className="px-4 py-3">Reference</th>
               <th className="px-4 py-3">Merchant</th>
+              <th className="px-4 py-3">Performed by</th>
               <th className="px-4 py-3">Amount</th>
               <th className="px-4 py-3">Crypto</th>
               <th className="px-4 py-3">Type</th>
@@ -82,6 +84,15 @@ export default async function TransactionsPage({
                 <td className="px-4 py-3 font-mono text-xs text-neutral-400">{tx.reference}</td>
                 <td className="px-4 py-3">
                   {typeof tx.merchantId === "object" ? tx.merchantId?.businessName || "—" : "—"}
+                </td>
+                <td className="px-4 py-3">
+                  {tx.actingDelegateChatId ? (
+                    <span className="rounded-full bg-lime-400/10 px-2 py-0.5 text-xs text-lime-400">
+                      🔗 Delegate ({tx.actingDelegateChatId})
+                    </span>
+                  ) : (
+                    <span className="text-neutral-500">Merchant</span>
+                  )}
                 </td>
                 <td className="px-4 py-3">
                   {tx.amount} {tx.currency}

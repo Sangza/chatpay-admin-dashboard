@@ -1,8 +1,14 @@
 import { backendFetch, BackendApiError } from "@/lib/backend";
 import ApiErrorNotice from "@/components/api-error-notice";
 
+interface FlowBreakdown {
+  amount: number;
+  count: number;
+}
+
 interface VolumeResponse {
   totalAmountProcessed: number;
+  breakdown: { pay: FlowBreakdown; buy: FlowBreakdown; sell: FlowBreakdown };
   asset: string;
 }
 
@@ -42,18 +48,46 @@ export default async function RevenuePage() {
 
       <div className="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-2">
         <div className="rounded-lg border border-neutral-800 p-5">
-          <p className="text-sm text-neutral-400">USDC volume processed</p>
+          <p className="text-sm text-neutral-400">USDC volume processed (pay + buy + sell)</p>
           <p className="mt-1 text-2xl font-semibold">{usdc?.totalAmountProcessed?.toLocaleString() ?? "—"}</p>
         </div>
         <div className="rounded-lg border border-neutral-800 p-5">
-          <p className="text-sm text-neutral-400">USDT volume processed</p>
+          <p className="text-sm text-neutral-400">USDT volume processed (pay + buy + sell)</p>
           <p className="mt-1 text-2xl font-semibold">{usdt?.totalAmountProcessed?.toLocaleString() ?? "—"}</p>
         </div>
       </div>
+
+      {(usdc || usdt) && (
+        <div className="mb-6 overflow-x-auto rounded-lg border border-neutral-800">
+          <table className="w-full text-left text-sm">
+            <thead className="bg-neutral-900 text-neutral-400">
+              <tr>
+                <th className="px-4 py-3">Flow</th>
+                <th className="px-4 py-3">USDC amount</th>
+                <th className="px-4 py-3">USDC count</th>
+                <th className="px-4 py-3">USDT amount</th>
+                <th className="px-4 py-3">USDT count</th>
+              </tr>
+            </thead>
+            <tbody>
+              {(["pay", "buy", "sell"] as const).map((flow) => (
+                <tr key={flow} className="border-t border-neutral-800">
+                  <td className="px-4 py-3 font-medium capitalize">{flow}</td>
+                  <td className="px-4 py-3">{usdc?.breakdown?.[flow]?.amount.toLocaleString() ?? "—"}</td>
+                  <td className="px-4 py-3 text-neutral-400">{usdc?.breakdown?.[flow]?.count ?? "—"}</td>
+                  <td className="px-4 py-3">{usdt?.breakdown?.[flow]?.amount.toLocaleString() ?? "—"}</td>
+                  <td className="px-4 py-3 text-neutral-400">{usdt?.breakdown?.[flow]?.count ?? "—"}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+
       <p className="mb-6 text-xs text-neutral-500">
-        Gross volume, not profit — only counts transactions marked <code>completed</code>, which
-        today excludes confirmed Telegram <code>pay</code> transactions (a known gap: that flow
-        never flips status to <code>completed</code>). Treat this as a lower bound, not the real total.
+        Gross volume, not profit — only counts transactions marked <code>completed</code> in each
+        flow&apos;s own status field. Treat this as a lower bound, not the real total, if any flow&apos;s
+        completion status isn&apos;t being set reliably.
       </p>
 
       <div className="rounded-lg border border-dashed border-neutral-700 p-10 text-center">
